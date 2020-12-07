@@ -9,11 +9,23 @@ app = FastAPI()
 @app.get("/stock/{ticker}")
 async def get_stock_data(ticker: str):
     ticker_data = yf.Ticker(ticker).info
+    mktprice = ticker_data["regularMarketPrice"]
     mktopen = ticker_data["open"]
     mkthigh = ticker_data["dayHigh"]
     mktlow = ticker_data["dayLow"]
     mktvolume = ticker_data["volume"]
-    return {"open": mktopen, "high": mkthigh, "low": mktlow, "volume": mktvolume}
+    prevclose = ticker_data["previousClose"]
+    forwardPE = ticker_data["forwardPE"]
+
+    return {
+        "price": mktprice,
+        "open": mktopen,
+        "high": mkthigh,
+        "low": mktlow,
+        "volume": mktvolume,
+        "prevclose": prevclose,
+        "forwardPE": forwardPE,
+    }
 
 
 @app.get("/stock/historic/{ticker}")
